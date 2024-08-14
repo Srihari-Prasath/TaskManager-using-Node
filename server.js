@@ -1,6 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const taskRoutes = require('./routes/taskroutes');
+
+
+app.use('/api', taskRoutes);
 
 const app = express();
 const port = 3000;
