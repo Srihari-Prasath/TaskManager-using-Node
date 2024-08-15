@@ -1,2 +1,2 @@
-git commit -m "Initial commit"
-
+# Dependency directories
+node_modules/
