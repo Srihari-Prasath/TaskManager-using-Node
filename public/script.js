@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const titleInput = document.getElementById('task-title');
     const completedInput = document.getElementById('task-completed');
     const taskList = document.getElementById('task-list');
+    let editingTaskId = null;
 
     const apiUrl = 'http://localhost:3000/api/tasks';
 
-    // Load tasks
     function loadTasks() {
         fetch(apiUrl)
             .then(response => response.json())
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     li.innerHTML = `
                         <span>${task.title} - ${task.completed ? 'Completed' : 'Not Completed'}</span>
                         <div>
-                            <button class="edit" data-id="${task._id}">Edit</button>
+                            <button class="edit" data-id="${task._id}" data-title="${task.title}" data-completed="${task.completed}">Edit</button>
                             <button class="delete" data-id="${task._id}">Delete</button>
                         </div>
                     `;
@@ -26,14 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // Add task
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const title = titleInput.value;
         const completed = completedInput.checked;
+        const method = editingTaskId ? 'PUT' : 'POST';
+        const url = editingTaskId ? `${apiUrl}/${editingTaskId}` : apiUrl;
 
-        fetch(apiUrl, {
-            method: 'POST',
+        fetch(url, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -43,12 +44,22 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(() => {
             titleInput.value = '';
             completedInput.checked = false;
+            editingTaskId = null;
             loadTasks();
         });
     });
 
-    // Delete task
     taskList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('edit')) {
+            const id = e.target.getAttribute('data-id');
+            const title = e.target.getAttribute('data-title');
+            const completed = e.target.getAttribute('data-completed') === 'true';
+
+            titleInput.value = title;
+            completedInput.checked = completed;
+            editingTaskId = id;
+        }
+
         if (e.target.classList.contains('delete')) {
             const id = e.target.getAttribute('data-id');
 
@@ -59,6 +70,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initial load
     loadTasks();
 });
