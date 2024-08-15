@@ -15,9 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.forEach(task => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                        ${task.title} - ${task.completed ? 'Completed' : 'Not Completed'}
-                        <button class="edit" data-id="${task._id}">Edit</button>
-                        <button class="delete" data-id="${task._id}">Delete</button>
+                        <span>${task.title} - ${task.completed ? 'Completed' : 'Not Completed'}</span>
+                        <div>
+                            <button class="edit" data-id="${task._id}">Edit</button>
+                            <button class="delete" data-id="${task._id}">Delete</button>
+                        </div>
                     `;
                     taskList.appendChild(li);
                 });
